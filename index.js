@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const {
-  Client, Events, GatewayIntentBits, Collection,
+  Client, Events, GatewayIntentBits, Collection, EmbedBuilder,
 } = require('discord.js');
 const { token } = require('./config.json');
 
@@ -50,5 +50,31 @@ client.on(Events.InteractionCreate, async (interaction) => {
   } catch (error) {
     console.error(error);
     await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  }
+});
+
+// Button Embed
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isButton()) return;
+  if (interaction.customId === 'primary') {
+    const exampleEmbed = new EmbedBuilder()
+      .setColor(0x0099FF)
+      .setTitle('Some title')
+      .setURL('https://discord.js.org/')
+      .setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+      .setDescription('Some description here')
+      .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+      .addFields(
+        { name: 'Regular field title', value: 'Some value here' },
+        { name: '\u200B', value: '\u200B' },
+        { name: 'Inline field title', value: 'Some value here', inline: true },
+        { name: 'Inline field title', value: 'Some value here', inline: true },
+      )
+      .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
+      .setImage('https://i.imgur.com/AfFp7pu.png')
+      .setTimestamp()
+      .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+
+    await interaction.reply({ embeds: [exampleEmbed] });
   }
 });
